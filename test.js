@@ -20,4 +20,5 @@ for (let i = 0; i < 20000; i++) {
 Promise.all(promises)
     .then((results) => {
         console.log(results);
+        console.log(process.memoryUsage());
     });

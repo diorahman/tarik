@@ -9,7 +9,9 @@
   "author": "Dhi Aurrahman",
   "license": "ISC",
   "dependencies": {
-    "hyperquest": "2.1.0",
+    "hyperquest": "2.1.0"
+  },
+  "devDependencies": {
     "request": "2.75.0",
     "request-promise": "4.1.1"
   }
