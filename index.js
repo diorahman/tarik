@@ -7,10 +7,14 @@ const request = (options) => {
 
     return new Promise((resolve, reject) => {
         const r = fetch(options);
-        r.end(options.body);
+        if (options.body) {
+            r.end(options.body);
+        }
 
         let data = '';
         let result = {};
+
+        r.on('error', reject);
 
         r.on('response', (response) => {
             result.statusCode = response.statusCode;
