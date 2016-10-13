@@ -1,9 +1,8 @@
 const fetch = require('hyperquest');
 const qs = require('querystring');
-const ua = 'Tarik/' + require('./package.json').version;
+const UA = 'Tarik/' + require('./package.json').version;
 
-const request = (options = {}) => {
-    options.headers = options.headers || {};
+const request = (options) => {
     if (options.body) {
         if (typeof options.body === 'object') {
             if (/json/.test(options.headers['Content-Type'])) {
@@ -18,7 +17,6 @@ const request = (options = {}) => {
     }
 
     return new Promise((resolve, reject) => {
-        options.headers['User-Agent'] = ua;
         const r = fetch(options);
         if (r.request.duplex) {
             r.end(options.body);
@@ -48,69 +46,55 @@ const request = (options = {}) => {
     });
 }
 
-request.post = (uri, body, options = {}) => {
+const make = (method, uri, body, options) => {
     const settings = {
-        method: 'POST',
-        uri,
-        body,
-        headers: {
-            'Content-Type': options.json ? 'application/json' : 'application/x-www-form-urlencoded'
+        method,
+        uri: (options && options.query) ? uri + '?' + qs.stringify(options.query) : uri,
+    };
+
+    if (body) {
+        settings.body = body;
+        settings.headers = {
+            'Content-Type': (options && options.json) ? 'application/json' : 'application/x-www-form-urlencoded',
+            'User-Agent': UA
         }
-    };
-    fill(options, settings);
-    return request(settings);
-};
 
-request.patch = (uri, body, options = {}) => {
-    const settings = {
-        method: 'PATCH',
-        uri,
-        body,
-        headers: {
-            'Content-Type': options.json ? 'application/json' : 'application/x-www-form-urlencoded'
+        if (options && options.headers) {
+            fill(settings.headers, options.headers);
+            delete options.headers;
         }
-    };
-    fill(settings, options);
-    return request(settings);
-}
+    }
 
-request.put = (uri, body, options = {}) => {
-    const settings = {
-        method: 'PUT',
-        uri,
-        body,
-        headers: {
-            'Content-Type': options.json ? 'application/json' : 'application/x-www-form-urlencoded'
-        }
-    };
     fill(settings, options);
-    return request(settings);
-}
-
-request.get = (uri, query, options = {}) => {
-    const settings = {
-        method: 'GET',
-        uri: query ? uri + '?' + qs.stringify(query) : uri,
-    };
-    fill(settings, options);
-    return request(settings);
-}
-
-request['delete'] = (uri, query, options = {}) => {
-    const settings = {
-        method: 'DELETE',
-        uri: query ? uri + '?' + qs.stringify(query) : uri,
-    };
-    fill(options, settings);
     return request(settings);
 }
 
 const fill = (a, b) => {
-    for (let k in a) {
-        if (!b[k]) {
-            b[k] = a[k];
+    for (let k in b) {
+        if (!a[k]) {
+            a[k] = b[k];
         }
     }
+}
+
+request.post = (uri, body, options) => {
+    return make('POST', uri, body, options);
+};
+
+request.patch = (uri, body, options) => {
+    return make('PATCH', uri, body, options);
+}
+
+request.put = (uri, body, options) => {
+    return make('PUT', uri, body, options);
+}
+
+request.get = (uri, options) => {
+    return make('GET', uri, null, options);
+}
+
+request.delete = (uri, options) => {
+    return make('DELETE', uri, null, options);
 }
 
 module.exports = request;

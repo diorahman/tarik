@@ -50,9 +50,24 @@ test('delete', async t => {
     };
 
     const uri = 'http://posttestserver.com/post.php?dump';
-    const { statusCode, body, headers } = await request.delete(uri, payload);
+    const { statusCode, body, headers } = await request.delete(uri, { query: payload });
     t.deepEqual(statusCode, 200);
 });
+
+test('get', async t => {
+    const payload = {
+        cpCustomerID: 'kayden75@yahoo.com',
+        apiuser: 'qpadmin',
+        apipassword: 'password1',
+        channelPartnerID: 'HAWK',
+        dump: 1
+    };
+
+    const uri = 'http://posttestserver.com/post.php?dump';
+    const { statusCode, body, headers } = await request.get(uri, { query: payload });
+    t.deepEqual(statusCode, 200);
+});
+
 
 test('json', async t => {
     const payload = {
@@ -72,7 +87,7 @@ test('json', async t => {
     };
 
     const uri = 'http://posttestserver.com/post.php?dump';
-    const { statusCode, body, headers } = await request.post(uri, payload, { json: true });
+    const { statusCode, body, headers } = await request.post(uri, payload, { json: true, headers: { OK: 1 } });
 });
 
 test('timeout', async t => {

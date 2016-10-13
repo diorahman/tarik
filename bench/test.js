@@ -13,7 +13,7 @@ const get = request({
 });
 
 const promises = [];
-for (let i = 0; i < 1; i++) {
+for (let i = 0; i < 20000; i++) {
     promises.push(get);
 }
 
