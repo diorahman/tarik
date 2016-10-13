@@ -4,7 +4,7 @@ const headers = {
     'Content-Type': 'application/x-www-form-urlencoded'
 };
 
-const request = require('./');
+const request = require('../');
 const get = request({
     method: 'POST',
     uri,
@@ -13,7 +13,7 @@ const get = request({
 });
 
 const promises = [];
-for (let i = 0; i < 20000; i++) {
+for (let i = 0; i < 1; i++) {
     promises.push(get);
 }
 

@@ -4,14 +4,25 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "ava"
   },
   "author": "Dhi Aurrahman",
   "license": "ISC",
+  "ava": {
+    "require": [
+      "async-to-gen/register"
+    ],
+    "files": [
+      "test/index.js"
+    ]
+  },
   "dependencies": {
-    "hyperquest": "2.1.0"
+    "hyperquest": "github:diorahman/hyperquest#v2.1.1-timeout",
+    "through2": "2.0.1"
   },
   "devDependencies": {
+    "async-to-gen": "1.1.4",
+    "ava": "0.16.0",
     "request": "2.75.0",
     "request-promise": "4.1.1"
   }
