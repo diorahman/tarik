@@ -9,7 +9,7 @@ test('urlencoded', async t => {
         channelPartnerID: 'HAWK'
     };
 
-    const uri = 'https://load-sg-rest.evergent.com/qp/searchAccount';
+    const uri = 'https://rest-stag.evergent.com/qp/searchAccount';
     const { statusCode, body, headers } = await request.post(uri, payload);
     t.deepEqual(statusCode, 200);
 });
@@ -113,4 +113,16 @@ test('timeout', async t => {
     } catch (err) {
         t.deepEqual(err.code, 'ETIMEDOUT');
     }
+});
+
+test('get with qs', async t => {
+    const uri = 'http://posttestserver.com/post.php';
+    const { statusCode, body, headers } = await request({
+        method: 'GET',
+        uri,
+        qs: {
+            dump: 1
+        }
+    });
+    t.truthy(body.indexOf('REQUEST_URI') >= 0);
 });

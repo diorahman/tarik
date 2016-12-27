@@ -16,6 +16,9 @@ const request = (options) => {
         options.headers['Content-Length'] = Buffer.byteLength(options.body);
     }
 
+    const query = options.query || options.qs;
+    options.uri = query ? (options.uri + '?' + qs.stringify(query)) : options.uri;
+
     return new Promise((resolve, reject) => {
         const r = fetch(options);
         if (r.request.duplex) {
@@ -47,9 +50,10 @@ const request = (options) => {
 }
 
 const make = (method, uri, body, options) => {
+    const query = options ? (options.query || options.qs) : null;
     const settings = {
         method,
-        uri: (options && options.query) ? uri + '?' + qs.stringify(options.query) : uri,
+        uri: query ? (uri + '?' + qs.stringify(query)) : uri,
     };
 
     if (body) {
