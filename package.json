@@ -22,5 +22,22 @@
   "devDependencies": {
     "async-to-gen": "1.1.4",
     "ava": "0.16.0"
-  }
+  },
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HOOQTV/tarik.git"
+  },
+  "keywords": [
+    "http",
+    "client",
+    "fast",
+    "async"
+  ],
+  "bugs": {
+    "url": "https://github.com/HOOQTV/tarik/issues"
+  },
+  "homepage": "https://github.com/HOOQTV/tarik#readme"
 }
