@@ -1,13 +1,13 @@
 {
   "name": "tarik",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Fast, minimalist",
   "main": "index.js",
   "scripts": {
     "test": "ava"
   },
-  "author": "Dhi Aurrahman",
-  "license": "ISC",
+  "author": "Dhi Aurrahman <dio@hooq.tv>",
+  "license": "MIT",
   "ava": {
     "require": [
       "async-to-gen/register"
@@ -17,13 +17,10 @@
     ]
   },
   "dependencies": {
-    "hyperquest": "github:diorahman/hyperquest#v2.1.1-timeout",
-    "through2": "2.0.1"
+    "hyperquest": "github:diorahman/hyperquest#v2.1.1-timeout"
   },
   "devDependencies": {
     "async-to-gen": "1.1.4",
-    "ava": "0.16.0",
-    "request": "2.75.0",
-    "request-promise": "4.1.1"
+    "ava": "0.16.0"
   }
 }
