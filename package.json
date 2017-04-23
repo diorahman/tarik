@@ -1,6 +1,6 @@
 {
   "name": "tarik",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Fast, minimalist",
   "main": "index.js",
   "scripts": {
