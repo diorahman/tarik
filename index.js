@@ -67,21 +67,13 @@ const make = (method, uri, body, options) => {
     }
 
     if (options && options.headers) {
-      fill(settings.headers, options.headers)
-      delete options.headers
+      Object.assign(settings.headers, options.headers)
+      options.headers = null
     }
   }
 
-  fill(settings, options)
+  Object.assign(settings, options)
   return request(settings)
-}
-
-const fill = (a, b) => {
-  for (let k in b) {
-    if (!a[k]) {
-      a[k] = b[k]
-    }
-  }
 }
 
 request.post = (uri, body, options) => {
