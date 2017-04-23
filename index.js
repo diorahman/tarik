@@ -68,7 +68,7 @@ const make = (method, uri, body, options) => {
 
     if (options && options.headers) {
       Object.assign(settings.headers, options.headers)
-      options.headers = null
+      delete options.headers
     }
   }
 
