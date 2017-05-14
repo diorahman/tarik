@@ -17,7 +17,7 @@
     ]
   },
   "dependencies": {
-    "teh": "^1.0.0"
+    "teh": "^1.0.1"
   },
   "devDependencies": {
     "async-to-gen": "1.1.4",
