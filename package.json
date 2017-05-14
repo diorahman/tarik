@@ -4,7 +4,7 @@
   "description": "Fast, minimalist",
   "main": "index.js",
   "scripts": {
-    "test": "ava"
+    "test": "ava --verbose"
   },
   "author": "Dhi Aurrahman <dio@hooq.tv>",
   "license": "MIT",
@@ -17,7 +17,7 @@
     ]
   },
   "dependencies": {
-    "hyperquest": "github:diorahman/hyperquest#v2.1.1-timeout"
+    "teh": "^1.0.0"
   },
   "devDependencies": {
     "async-to-gen": "1.1.4",

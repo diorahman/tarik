@@ -111,3 +111,9 @@ test('custom ua', async t => {
   const {body} = await request.post(uri, {ok: 1}, {headers: {'User-Agent': 'Hihi'}})
   t.truthy(body.indexOf('HTTP_USER_AGENT = Hihi') >= 0)
 })
+
+test('https', async t => {
+  const uri = 'https://rest.bandsintown.com/artists'
+  const {body} = await request.get(uri)
+  t.truthy(body.message)
+})

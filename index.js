@@ -1,4 +1,4 @@
-const fetch = require('hyperquest')
+const fetch = require('teh')
 const qs = require('querystring')
 const UA = 'Tarik/' + require('./package.json').version
 
