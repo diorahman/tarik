@@ -1,12 +1,14 @@
 const fetch = require('teh')
 const qs = require('querystring')
+const Promise = require('bluebird')
 const UA = 'Tarik/' + require('./package.json').version
 
-const request = (options) => {
-  options.headers = options.headers || {}
+const request = (opts) => {
+  const options = Object.assign({ headers: {} }, opts)
   if (options.body) {
     if (typeof options.body === 'object') {
-      options.headers['Content-Type'] = options.json ? 'application/json' : options.headers['Content-Type']
+      options.headers['Content-Type'] = options.json ? 'application/json'
+        : (options.headers['Content-Type'] || 'application/x-www-form-urlencoded')
       if (/json/.test(options.headers['Content-Type'])) {
         // FIXME: if it has scheme, use fast-json-stringify
         options.body = JSON.stringify(options.body)
@@ -64,7 +66,6 @@ const make = (method, uri, body, options) => {
 
     if (options && options.headers) {
       Object.assign(settings.headers, options.headers)
-      delete options.headers
     }
   }
 

@@ -4,7 +4,7 @@
   "description": "Fast, minimalist",
   "main": "index.js",
   "scripts": {
-    "test": "ava --verbose"
+    "test": "ava --verbose --fail-fast"
   },
   "author": "Dhi Aurrahman <dio@hooq.tv>",
   "license": "MIT",
@@ -17,6 +17,7 @@
     ]
   },
   "dependencies": {
+    "bluebird": "^3.5.0",
     "teh": "^1.0.1"
   },
   "devDependencies": {

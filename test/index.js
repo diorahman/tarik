@@ -1,14 +1,32 @@
 const test = require('ava')
 const request = require('../')
 
+async function create () {
+  const {body} = await request.post('http://requestb.in/api/v1/bins')
+  return {
+    url: `https://requestb.in/${body.name}`,
+    name: body.name
+  }
+}
+
+async function get (name) {
+  const {body} = await request.get(`https://requestb.in/api/v1/bins/${name}/requests`)
+  return body.pop()
+}
+
 test('urlencoded', async t => {
   const payload = {
     email: 'kayden75@yahoo.com'
   }
 
-  const uri = 'http://posttestserver.com/post.php?dump'
-  const {statusCode} = await request.post(uri, payload)
+  const {url, name} = await create()
+  const {statusCode} = await request.post(url, payload)
+  const sent = await get(name)
+
   t.deepEqual(statusCode, 200)
+  t.deepEqual(sent.method, 'POST')
+  t.deepEqual(sent.headers['Content-Type'], 'application/x-www-form-urlencoded')
+  t.deepEqual(sent.form_data, { email: [ payload.email ] })
 })
 
 test('put', async t => {
@@ -16,8 +34,9 @@ test('put', async t => {
     email: 'kayden75@yahoo.com'
   }
 
-  const uri = 'http://posttestserver.com/post.php?dump'
-  const {statusCode} = await request.put(uri, payload)
+  const {url} = await create()
+  const {statusCode} = await request.put(url, payload)
+
   t.deepEqual(statusCode, 200)
 })
 
@@ -26,8 +45,8 @@ test('patch', async t => {
     email: 'kayden75@yahoo.com'
   }
 
-  const uri = 'http://posttestserver.com/post.php?dump'
-  const {statusCode} = await request.patch(uri, payload)
+  const {url} = await create()
+  const {statusCode} = await request.patch(url, payload)
   t.deepEqual(statusCode, 200)
 })
 
@@ -37,8 +56,8 @@ test('delete', async t => {
     dump: 1
   }
 
-  const uri = 'http://posttestserver.com/post.php?dump'
-  const {statusCode} = await request.delete(uri, { query: payload })
+  const {url} = await create()
+  const {statusCode} = await request.delete(url, { query: payload })
   t.deepEqual(statusCode, 200)
 })
 
@@ -48,8 +67,8 @@ test('get', async t => {
     dump: 1
   }
 
-  const uri = 'http://posttestserver.com/post.php?dump'
-  const {statusCode} = await request.get(uri, { query: payload })
+  const {url} = await create()
+  const {statusCode} = await request.get(url, { query: payload })
   t.deepEqual(statusCode, 200)
 })
 
@@ -67,9 +86,11 @@ test('json', async t => {
     }
   }
 
-  const uri = 'http://posttestserver.com/post.php?dump'
-  const {statusCode} = await request.post(uri, payload, { json: true, headers: { OK: 1 } })
+  const {url, name} = await create()
+  const {statusCode} = await request.post(url, payload, { json: true, headers: { OK: 1 } })
+  const sent = await get(name)
   t.deepEqual(statusCode, 200)
+  t.deepEqual(typeof sent.body === 'string' ? JSON.parse(sent.body) : sent.body, payload)
 })
 
 test('timeout', async t => {
@@ -95,15 +116,17 @@ test('timeout', async t => {
 })
 
 test('get with qs', async t => {
-  const uri = 'http://posttestserver.com/post.php'
-  const {body} = await request({
+  const {url, name} = await create()
+  const {statusCode} = await request({
     method: 'GET',
-    uri,
+    url,
     qs: {
       dump: 1
     }
   })
-  t.truthy(body.indexOf('REQUEST_URI') >= 0)
+  const sent = await get(name)
+  t.deepEqual(statusCode, 200)
+  t.deepEqual(sent.query_string, { dump: [ '1' ] })
 })
 
 test('get with qs with get', async t => {
