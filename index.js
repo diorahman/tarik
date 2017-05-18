@@ -53,11 +53,7 @@ const request = (options) => {
 }
 
 const make = (method, uri, body, options) => {
-  const query = options ? (options.query || options.qs) : null
-  const settings = {
-    method,
-    uri: query ? (uri + '?' + qs.stringify(query)) : uri
-  }
+  const settings = { method, uri }
 
   if (body) {
     settings.body = body

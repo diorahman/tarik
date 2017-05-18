@@ -106,6 +106,19 @@ test('get with qs', async t => {
   t.truthy(body.indexOf('REQUEST_URI') >= 0)
 })
 
+test('get with qs with get', async t => {
+  const uri = 'http://posttestserver.com/post.php'
+  const {body} = await request.get(uri, {
+    qs: {
+      dump: 1
+    }
+  })
+  t.truthy(body.indexOf('REQUEST_URI') >= 0)
+
+  const realUri = body.match(/REQUEST_URI = (.+)/)[1] || ''
+  t.deepEqual(realUri.match(/dump=1/g).length, 1)
+})
+
 test('custom ua', async t => {
   const uri = 'http://posttestserver.com/post.php?dump'
   const {body} = await request.post(uri, {ok: 1}, {headers: {'User-Agent': 'Hihi'}})
