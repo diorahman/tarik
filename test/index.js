@@ -2,7 +2,7 @@ const test = require('ava')
 const request = require('../')
 
 async function create () {
-  const {body} = await request.post('http://requestb.in/api/v1/bins')
+  const {body} = await request.post('https://requestb.in/api/v1/bins')
   return {
     url: `https://requestb.in/${body.name}`,
     name: body.name
@@ -145,7 +145,7 @@ test('get with qs with get', async t => {
 test('custom ua', async t => {
   const uri = 'http://posttestserver.com/post.php?dump'
   const {body} = await request.post(uri, {ok: 1}, {headers: {'User-Agent': 'Hihi'}})
-  t.truthy(body.indexOf('HTTP_USER_AGENT = Hihi') >= 0)
+  t.true(body.indexOf('HTTP_USER_AGENT = Hihi') >= 0)
 })
 
 test('https', async t => {

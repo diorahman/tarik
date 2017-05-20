@@ -4,12 +4,13 @@ const Promise = require('bluebird')
 const UA = 'Tarik/' + require('./package.json').version
 
 const request = (opts) => {
-  const options = Object.assign({ headers: {} }, opts)
+  const headers = { 'User-Agent': UA }
+  const options = Object.assign({ headers }, opts)
   if (options.body) {
     if (typeof options.body === 'object') {
       options.headers['Content-Type'] = options.json ? 'application/json'
         : (options.headers['Content-Type'] || 'application/x-www-form-urlencoded')
-      if (/json/.test(options.headers['Content-Type'])) {
+      if (/json/.test(options.headers['Content-Type']) || request.json) {
         // FIXME: if it has scheme, use fast-json-stringify
         options.body = JSON.stringify(options.body)
       } else {
@@ -54,17 +55,12 @@ const request = (opts) => {
   })
 }
 
-const make = (method, uri, body, options) => {
-  const settings = { method, uri }
+const make = (method, uri, body, options = {}) => {
+  const settings = { method, uri, headers: {} }
 
   if (body) {
     settings.body = body
-    settings.headers = {
-      'Content-Type': (options && options.json) ? 'application/json' : 'application/x-www-form-urlencoded',
-      'User-Agent': UA
-    }
-
-    if (options && options.headers) {
+    if (options.headers) {
       Object.assign(settings.headers, options.headers)
     }
   }
