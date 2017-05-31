@@ -1,92 +1,102 @@
-const fetch = require('teh')
+const fetch = require('./fetch')
 const qs = require('querystring')
 const Promise = require('bluebird')
-const UA = 'Tarik/' + require('./package.json').version
 
-const request = (opts) => {
-  const headers = { 'User-Agent': UA }
-  const options = Object.assign({ headers }, opts)
-  if (options.body) {
-    if (typeof options.body === 'object') {
-      options.headers['Content-Type'] = options.json ? 'application/json'
-        : (options.headers['Content-Type'] || 'application/x-www-form-urlencoded')
-      if (/json/.test(options.headers['Content-Type']) || request.json) {
-        // FIXME: if it has scheme, use fast-json-stringify
-        options.body = JSON.stringify(options.body)
-      } else {
-        options.body = qs.stringify(options.body)
+Promise.config({
+  warnings: false,
+  longStackTraces: false,
+  cancellation: true,
+  monitoring: false
+})
+
+function request (opts = Object.create(null)) {
+  let p
+  p = new Promise(function (resolve, reject, onCancel) {
+    const abort = fetch(opts, function responseHandler (err, data) {
+      if (err) {
+        return reject(err)
       }
-    }
 
-    options.headers['Content-Length'] = Buffer.byteLength(options.body)
-  }
+      let ret = Object.create(null)
+      ret.statusCode = data.statusCode
+      ret.headers = data.headers
 
-  const query = options.query || options.qs
-  options.uri = options.uri || options.url
-  options.uri = query ? (options.uri + '?' + qs.stringify(query)) : options.uri
-
-  return new Promise((resolve, reject) => {
-    const r = fetch(options)
-    if (r.request.duplex) {
-      r.end(options.body)
-    }
-
-    let data = []
-    let result = {}
-
-    r.on('error', (err) => {
-      return reject(r.timeout || err)
+      if (/json/.test(data.headers['content-type'])) {
+        try {
+          ret.body = JSON.parse(data.body)
+        } catch (err) {
+          // returns the Buffer
+          ret.body = data.body
+        }
+      } else {
+        ret.body = data.body
+      }
+      resolve(ret)
+      data = null
     })
 
-    r.on('response', (response) => {
-      result.statusCode = response.statusCode
-      result.headers = response.headers
-    })
-
-    r.on('data', (chunk) => {
-      data.push(chunk)
-    })
-
-    r.on('end', () => {
-      const str = Buffer.concat(data).toString()
-      result.body = /json/.test(result.headers['content-type']) ? JSON.parse(str) : str
-      resolve(result)
+    onCancel(() => {
+      const monitor = abort()
+      p.monitor = monitor
     })
   })
+  return p
 }
 
-const make = (method, uri, body, options = {}) => {
-  const settings = { method, uri, headers: {} }
+function make (method, url, opts = Object.create(null)) {
+  let uri = url
+  let q = opts.query || opts.qs
 
-  if (body) {
-    settings.body = body
-    if (options.headers) {
-      Object.assign(settings.headers, options.headers)
-    }
+  if (q) {
+    uri = uri + '?' + qs.stringify(q)
   }
 
-  Object.assign(settings, options)
-  return request(settings)
+  let headers = Object.create(null)
+  headers['Content-Type'] = opts.json ? 'application/json' : 'application/x-www-form-urlencoded'
+  let options = Object.create(null)
+  options.method = method
+  options.headers = headers
+  options.uri = uri
+  options = Object.assign(options, opts)
+
+  options.body = options.json ? JSON.stringify(options.body) : qs.stringify(options.body)
+  return options
 }
 
-request.post = (uri, body, options) => {
-  return make('POST', uri, body, options)
+request.get = function (uri, opts) {
+  return request(make('GET', uri, opts))
 }
 
-request.patch = (uri, body, options) => {
-  return make('PATCH', uri, body, options)
+request.post = function (uri, body, opts) {
+  let data = Object.create(null)
+  data.body = body
+
+  let made = make('POST', uri, Object.assign(data, opts))
+  return request(made)
 }
 
-request.put = (uri, body, options) => {
-  return make('PUT', uri, body, options)
+request.put = function (uri, body, opts) {
+  let data = Object.create(null)
+  data.body = body
+
+  let made = make('PUT', uri, Object.assign(data, opts))
+  return request(made)
 }
 
-request.get = (uri, options) => {
-  return make('GET', uri, null, options)
+request.patch = function (uri, body, opts) {
+  let data = Object.create(null)
+  data.body = body
+
+  let made = make('PATCH', uri, Object.assign(data, opts))
+  return request(made)
 }
 
-request.delete = (uri, options) => {
-  return make('DELETE', uri, null, options)
+request.delete = function (uri, body, opts) {
+  let data = Object.create(null)
+  data.body = body
+
+  let made = make('DELETE', uri, Object.assign(data, opts))
+  return request(made)
 }
 
 module.exports = request

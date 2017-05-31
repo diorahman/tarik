@@ -1,44 +1,44 @@
 {
   "name": "tarik",
   "version": "1.0.9",
-  "description": "Fast, minimalist",
+  "description": "Minimalist request",
   "main": "index.js",
   "scripts": {
-    "test": "ava --verbose --fail-fast"
+    "test": "jest --runInBand"
+  },
+  "babel": {
+    "presets": [
+      [
+        "env",
+        {
+          "targets": {
+            "node": true
+          }
+        }
+      ]
+    ]
+  },
+  "jest": {
+    "testEnvironment": "node"
   },
   "author": "Dhi Aurrahman <dio@hooq.tv>",
   "license": "MIT",
-  "ava": {
-    "require": [
-      "async-to-gen/register"
-    ],
-    "files": [
-      "test/index.js"
-    ]
-  },
-  "dependencies": {
-    "bluebird": "^3.5.0",
-    "teh": "^1.0.1"
-  },
   "devDependencies": {
-    "async-to-gen": "1.1.4",
-    "ava": "0.16.0"
-  },
-  "directories": {
-    "test": "test"
+    "babel-jest": "^20.0.3",
+    "babel-preset-env": "^1.5.0",
+    "jest": "^20.0.3",
+    "request": "^2.81.0",
+    "request-promise": "^4.2.1"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/HOOQTV/tarik.git"
   },
-  "keywords": [
-    "http",
-    "client",
-    "fast",
-    "async"
-  ],
   "bugs": {
     "url": "https://github.com/HOOQTV/tarik/issues"
   },
-  "homepage": "https://github.com/HOOQTV/tarik#readme"
+  "homepage": "https://github.com/HOOQTV/tarik#readme",
+  "dependencies": {
+    "bluebird": "^3.5.0"
+  }
 }
